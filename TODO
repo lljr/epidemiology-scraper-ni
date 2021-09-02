@@ -1,0 +1,5 @@
+;;; -*- mode: org; -*-*
+* TODO Export feed to S3 custom endpoint
+  Won't export correctly when using the scrapy instructions in the
+  documentation. Issue discussed in [[https://github.com/scrapy/scrapy/pull/4998][#4998]]. Gets stuck in invalid
+  endpoint error.

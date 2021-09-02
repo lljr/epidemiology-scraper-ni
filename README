@@ -1,0 +1,93 @@
+;;; -*- mode: org; -*-
+
+* Getting Started
+
+  - Clone the repo
+    - ~$ git clone git@github.com:lljr/minsa-epidemiology-scraper.git~
+  - Set up a python virtual environment with your tool of choice
+    - ~$ python3 -m venv my-venv~
+    - If [[https://virtualenvwrapper.readthedocs.io/en/latest/][Virtualenv wrapper]] installed: ~$ mkvirtualenv my-env~, ~$ workon my-env~
+
+** Requirements
+
+   Master branch versions of ~scrapyd~ and ~scrapyd-client~ used in the repo.
+   The remaining packages use the latest release versions.
+
+  - [[https://scrapy.org/][Scrapy]]
+    - ~$ python3 -m pip install git+https://github.com/scrapy/scrapy.git~
+  - [[https://pandas.pydata.org/pandas-docs/stable/][Pandas]]
+    - Facilitates the transformation of HTML tables to JSON.
+      - ~$ python3 -m pip install pandas~
+  - [[https://scrapyd.readthedocs.io/en/stable/][Scrapyd]]
+    - ~$ python3 -m pip install scrapyd~
+  - [[https://github.com/scrapy/scrapyd-client][Scrapyd-client]]
+    - Necessary to download latest from master branch
+      - ~$ python3 -m pip install git+https://github.com/scrapy/scrapyd-client.git~
+  - [[https://github.com/boto/botocore][Botocore]]
+    - Used in Feed Export to store output in AWS Object Storage
+      - ~$ python3 -m pip install botocore~
+
+    In one line: ~$ python3 -m pip install -r requirements.txt~
+
+* TODO Running the crawler
+  TODO
+
+* Deploying locally with Scrapyd
+
+*** Fixing ~scrapyd-client~ installation errors
+    You'll need to manually change a line, as explained in issue [[https://github.com/scrapy/scrapyd-client/issues/78#issuecomment-873540316][#78]].
+
+    Find the ~deploy.py~ file in your ~scrapyd-client~ package installation.
+    Import the ~w3lib~ library instead of the ~scrapy.utils.http~.
+ #+begin_src python
+   #from scrapy.utils.http import basic_auth_header
+   from w3lib.http import basic_auth_header
+ #+end_src
+
+*** Set up ~scrapyd-client~
+    In ~scrapy.cfg~, ~url~ points to the scrapyd server URL.
+    The project name should be set and the section for default
+    can be namespaced with a colon.
+
+    In this case it should look like this
+    #+begin_src python
+      [settings]
+      default = mapaminsa.settings
+
+      [deploy:local]
+      url = http://localhost:6800/
+      project = mapaminsa
+
+    #+end_src
+
+    Run ~$ scrapyd-deploy local~ in another terminal window.
+    Notice the project name was ommitted since it's set in
+   ~scrapy.cfg~ file.
+
+   *NOTE*: Make sure there are no runtime errors in the source code
+   because ~scrapyd-deploy~ will through them and may fail to deploy.
+
+*** Deploying
+    Open a terminal window and type ~scrapyd~ then navigate to the URL.
+    You won't see anything (except the UI) since no scrapy crawls have yet been scheduled in the queue.
+
+**** Schedule the spider with cURL
+      The server has an endpoint ~schedule.json~ which accepts a payload
+      #+begin_example
+      project=mapaminsa
+      spider=minsa
+      #+end_example
+
+      Running the following command will queue the spider.
+      The server creates a ~Job ID~ to interact with the spider running in the server.
+
+  #+begin_src shell
+    $ curl http://localhost:6800/schedule.json -d project=mapaminsa -d spider=minsa
+  #+end_src
+
+**** Stopping a spider
+     Scrapyd comes with an API. To cancel a running spider send a payload with
+     project name and job ID.
+     #+begin_src shell
+      $ curl http://localhost:6800/cancel.json -d project=mapaminsa -d job=spider_job_id
+     #+end_src

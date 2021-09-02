@@ -209,3 +209,4 @@ Thumbs.db
 /dbs/
 /mapaminsa/*.conf
 /*.pid
+/*.json

@@ -1,5 +1,7 @@
 ;;; -*- mode: org; -*-*
-* TODO Export feed to S3 custom endpoint
-  Won't export correctly when using the scrapy instructions in the
-  documentation. Issue discussed in [[https://github.com/scrapy/scrapy/pull/4998][#4998]]. Gets stuck in invalid
-  endpoint error.
+* TODO Catch 2 KeyErrors thrown in scraper output
+  There are two unmapped keys in the scrapper.
+  They correspond to the name of the disease. Due to MINSA's
+  website structure, these two rogue keys are not related to
+  any table. For now, it's ok to ignore, but preferably this
+  error should be fixed.

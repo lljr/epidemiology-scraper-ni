@@ -1,11 +1,12 @@
 ;;; -*- mode: org; -*-
 
+* Introduction and Motivation
+
 Nicaragua does not provide easy access to several types
 of data that may be of interest to civilians or researchers.
-There are many reasons for the lack of data transparency but hopefully
-this project creates a small dent in tackling the problem by providing
-easy access to a more organized data set. Currently, the data is
-stored in an [[https://epidemiology-ni.us-southeast-1.linodeobjects.com/epidemiology-data-ni.json][AWS bucket]].
+My hope is that this project creates a small dent in tackling the
+problem by providing access to a more organized data set. If you only
+want the data you may grab it via a [[https://epidemiology-ni.us-southeast-1.linodeobjects.com/epidemiology-data-ni.json][AWS bucket]].
 
 Even though the scraper can be run without ~scrapyd~ or ~scrapyd-client~, both
 of these packages schedule spiders to run in parallel and provide metrics

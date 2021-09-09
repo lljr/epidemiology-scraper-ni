@@ -1,5 +1,18 @@
 ;;; -*- mode: org; -*-
 
+Nicaragua does not provide easy access to several types
+of data that may be of interest to civilians or researchers.
+There are many reasons for the lack of data transparency but hopefully
+this project creates a small dent in tackling the problem by providing
+easy access to a more organized data set. Currently, the data is
+stored in an [[https://epidemiology-ni.us-southeast-1.linodeobjects.com/epidemiology-data-ni.json][AWS bucket]].
+
+Even though the scraper can be run without ~scrapyd~ or ~scrapyd-client~, both
+of these packages schedule spiders to run in parallel and provide metrics
+to them through it's web UI; due to these two functions they were
+added as package requirements.
+
+
 * Getting Started
 
   - Clone the repo
@@ -14,23 +27,28 @@
    The remaining packages use the latest release versions.
 
   - [[https://scrapy.org/][Scrapy]]
-    - ~$ python3 -m pip install git+https://github.com/scrapy/scrapy.git~
   - [[https://pandas.pydata.org/pandas-docs/stable/][Pandas]]
     - Facilitates the transformation of HTML tables to JSON.
-      - ~$ python3 -m pip install pandas~
   - [[https://scrapyd.readthedocs.io/en/stable/][Scrapyd]]
-    - ~$ python3 -m pip install scrapyd~
   - [[https://github.com/scrapy/scrapyd-client][Scrapyd-client]]
-    - Necessary to download latest from master branch
-      - ~$ python3 -m pip install git+https://github.com/scrapy/scrapyd-client.git~
   - [[https://github.com/boto/botocore][Botocore]]
-    - Used in Feed Export to store output in AWS Object Storage
-      - ~$ python3 -m pip install botocore~
+    - Used in Scrapy's Feed Export to store output in AWS Object Storage
 
-    In one line: ~$ python3 -m pip install -r requirements.txt~
+    Download all packages: ~$ python3 -m pip install -r requirements.txt~
 
-* TODO Running the crawler
-  TODO
+* Running the crawler
+  The crawler can be run with ~$ scrapy runspider minsa.py~ while in the
+  ~spiders/~ directory. However, you may need to open several terminal
+  windows if any change is made to the source code in order to test them.
+
+  Use instead ~scrapyd~ to schedule the spiders after any change has been
+  made to the source code.
+
+  Another available option is to change the ~DEPTH_LIMIT~ variable to run
+  the crawler only one level deep. In turn, you can make a change and
+  not have to wait several minutes for the crawl to end. This may be
+  helpful in certain scenarios but not in others. Either way, below
+  are instructions to set up ~scrapyd~.
 
 * Deploying locally with Scrapyd
 
